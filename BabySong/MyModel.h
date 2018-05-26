@@ -10,7 +10,7 @@
 
 @interface MyModel : NSObject
 
-@property (nonatomic,copy)NSString *id;
+@property (nonatomic,assign) NSInteger id;
 @property (nonatomic,copy)NSString *title;
 @property (nonatomic,copy)NSString *coverSmall;
 @property (nonatomic,copy)NSString *coverLarge;

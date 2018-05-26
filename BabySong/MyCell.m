@@ -27,7 +27,7 @@
     
     _label = [[UILabel alloc] initWithFrame:CGRectMake(0, _imageView.frame.size.height, frame.size.width, 25)];
     _label.numberOfLines = 1;
-    _label.font = [UIFont fontWithName:nil size:13];
+    _label.font = [UIFont systemFontOfSize:13];
     
     [self.contentView addSubview:_label];
 }
@@ -41,7 +41,6 @@
 -(void)showCellWithModel:(PlayModel *)model{
     [_imageView sd_setImageWithURL:[NSURL URLWithString:model.cover]];
     _label.text = model.name;
-    
 }
 
 @end

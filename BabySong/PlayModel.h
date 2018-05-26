@@ -16,4 +16,9 @@
 @property (nonatomic,copy)NSString *name;
 @property (nonatomic,copy)NSString *cover;
 
+//@property (nonatomic)NSInteger uid;
+//@property (nonatomic, copy)NSString *nickName;
+//@property (nonatomic, copy)NSString *mediumLogo;
+//@property (nonatomic, copy)NSString *personDescribe;
+
 @end

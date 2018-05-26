@@ -55,7 +55,7 @@
     _promptLabel = [[UILabel alloc] initWithFrame:CGRectMake(0, 64, kScreenSize.width, 20)];
     _promptLabel.backgroundColor = [UIColor orangeColor];
     _promptLabel.text = @"温馨提示:选中一行即可播放";
-    _promptLabel.font = [UIFont fontWithName:nil size:13];
+    _promptLabel.font = [UIFont systemFontOfSize:13];
     _promptLabel.textColor = [UIColor redColor];
     _promptLabel.textAlignment = NSTextAlignmentCenter;
     [self.view addSubview:_promptLabel];

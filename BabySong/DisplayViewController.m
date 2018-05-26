@@ -126,7 +126,7 @@
 
 //下载数据
 -(void)loadDataWithPage:(NSInteger)page pageSize:(NSInteger)pageSize{
-    NSString *url = [self.displayUrl stringByAppendingString:[NSString stringWithFormat:@"page=%ld&pageSize=%ld",page,pageSize]];
+    NSString *url = [self.displayUrl stringByAppendingString:[NSString stringWithFormat:@"page_id=%ld&pageSize=%ld",page,pageSize]];
     
     [MMProgressHUD setPresentationStyle:MMProgressHUDPresentationStyleDrop];
     [MMProgressHUD showWithTitle:@"正在下载数据" status:@"loading..."];
@@ -138,10 +138,12 @@
                 [weakSelf.dataArr removeAllObjects];
             }
             NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-            NSArray *dataList = json[@"dataList"];
+            NSArray *dataList = json[list];
             for (NSDictionary *dataDict in dataList) {
                 PlayModel *model = [[PlayModel alloc] init];
                 [model setValuesForKeysWithDictionary:dataDict];
+                model.duration = 150.f;
+                model.size = @"8";
                 [weakSelf.dataArr addObject:model];
             }
         }
@@ -186,7 +188,7 @@
     //[cell.imageView sd_setImageWithURL:[NSURL URLWithString:model.coverSmall] placeholderImage:[UIImage imageNamed:@"default.png"]];
     
     cell.textLabel.text = model.title;
-    cell.textLabel.font = [UIFont fontWithName:nil size:14];
+    cell.textLabel.font = [UIFont systemFontOfSize:14];
     cell.textLabel.numberOfLines = 0;
     CGRect frame = self.tableView.frame;
     if(model.duration){
@@ -243,7 +245,7 @@
     _textlabel.text = [NSString stringWithFormat:@"当前收听:%@",str];
     _textlabel.textColor = [UIColor redColor];
     _textlabel.textAlignment = NSTextAlignmentCenter;
-    _textlabel.font = [UIFont fontWithName:nil size:13];
+    _textlabel.font = [UIFont systemFontOfSize:13];
     _textlabel.numberOfLines = 2;
     [self.view addSubview:_textlabel];
     
@@ -310,7 +312,10 @@
     }
     if (_flag == 1) {
         DetailViewController *detailVc = [[DetailViewController alloc] init];
-        NSString *url = [NSString stringWithFormat:kDetailUrl,model.id];
+//        NSString *url = [NSString stringWithFormat:kDetailUrl,model.id];
+        
+        NSString *url = @"http://api.ximalaya.com/openapi-gateway-app/albums/browse?app_key=4bcb469d55cb527702077ee7911f3d79&client_os_type=4&nonce=20180506100252&timestamp=1525572172444.300293&album_id=14501623&page=1&sort=asc&sig=d7a56448c4b644e981ee7c6354ba1156";
+        
         detailVc.detailUrl = url;
         detailVc.model = model;
         [self.navigationController pushViewController:detailVc animated:YES];

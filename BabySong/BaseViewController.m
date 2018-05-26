@@ -147,14 +147,15 @@
     }
     
     __weak typeof(self) weakSelf = self;
+    _manager.responseSerializer = [AFJSONResponseSerializer serializer];
     [_manager GET:url parameters:nil success:^(AFHTTPRequestOperation *operation, id responseObject) {
         
         if (responseObject) {
             if (page == 1) {
                 [weakSelf.dataArr removeAllObjects];
             }
-            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
-            NSArray *dataList = json[@"dataList"];
+//            NSDictionary *json = [NSJSONSerialization JSONObjectWithData:responseObject options:NSJSONReadingMutableContainers error:nil];
+            NSArray *dataList = responseObject[list];
             for (NSDictionary *dataDict in dataList) {
                 PlayModel *model = [[PlayModel alloc] init];
                 [model setValuesForKeysWithDictionary:dataDict];
@@ -166,6 +167,8 @@
         
     } failure:^(AFHTTPRequestOperation *operation, NSError *error) {
         [weakSelf endRefresh];
+        [weakSelf.collectionView reloadData];
+
     }];
 }
 
@@ -179,6 +182,7 @@
 
 -(UICollectionViewCell *)collectionView:(UICollectionView *)collectionView cellForItemAtIndexPath:(NSIndexPath *)indexPath{
     MyCell *cell = [collectionView dequeueReusableCellWithReuseIdentifier:@"MyCell"forIndexPath:indexPath];
+    
     PlayModel *model = _dataArr[indexPath.row];
     if (_flag==0) {
         [cell showDataWithModel:model];

@@ -9,4 +9,17 @@
 
 @implementation PlayModel
 
+- (void)setValue:(id)value forUndefinedKey:(NSString *)key
+{
+    if ([key isEqualToString:@"mediumLogo"]) {
+        self.cover = self.coverSmall = self.coverLarge = value;
+    }
+    if ([key isEqualToString:@"nickname"]) {
+        self.title = value;
+    }
+    if ([key isEqualToString:@"uid"]) {
+        self.id = [value integerValue];
+    }
+}
+
 @end
