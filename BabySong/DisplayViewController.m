@@ -7,6 +7,7 @@
 
 #import "DisplayViewController.h"
 #import "DetailViewController.h"
+#import "Define.h"                // 喜马拉雅凭证宏定义在这里
 #import <AVFoundation/AVFoundation.h>
 
 @interface DisplayViewController ()<UITableViewDataSource,UITableViewDelegate,AVAudioPlayerDelegate>
@@ -314,7 +315,12 @@
         DetailViewController *detailVc = [[DetailViewController alloc] init];
 //        NSString *url = [NSString stringWithFormat:kDetailUrl,model.id];
         
-        NSString *url = @"http://api.ximalaya.com/openapi-gateway-app/albums/browse?app_key=4bcb469d55cb527702077ee7911f3d79&client_os_type=4&nonce=20180506100252&timestamp=1525572172444.300293&album_id=14501623&page=1&sort=asc&sig=d7a56448c4b644e981ee7c6354ba1156";
+        // 喜马拉雅专辑列表接口。
+        // app_key / nonce / timestamp / sig 是签名参数，四个值都在 Define.h 顶部，
+        // 必须替换成自己在开放平台申请的凭证，否则接口会返回签名校验失败。
+        NSString *url = [NSString stringWithFormat:
+                         @"http://api.ximalaya.com/openapi-gateway-app/albums/browse?app_key=%@&client_os_type=4&nonce=%@&timestamp=%@&album_id=14501623&page=1&sort=asc&sig=%@",
+                         kXimalayaAppKey, kXimalayaNonce, kXimalayaTimestamp, kXimalayaSig];
         
         detailVc.detailUrl = url;
         detailVc.model = model;

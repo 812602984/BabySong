@@ -37,15 +37,40 @@
 **4. 第三方库手动集成**
 `AFNetworking`、`SDWebImage`、`MMProgressHUD`、`JHRefresh` 都是源码直接放进工程目录，**没有走 CocoaPods**。好处是不用装 pod、打开就能编译；代价是版本升级要手动替换。
 
-## 数据来源
+## 数据来源与凭证配置（重要）
 
-接口用的是**喜马拉雅开放 API**：
+首页和分类列表用的是喜马拉雅的两个公开接口，不需要凭证：
+
+```
+http://subapp.ximalaya.com/index/821?page_id=%ld&pageSize=%ld
+http://subapp.ximalaya.com/821/bozhus/%ld
+```
+
+专辑列表用的是**需要签名的开放接口**：
 
 ```
 http://api.ximalaya.com/openapi-gateway-app/albums/browse
 ```
 
-代码里是写死的 `app_key` 和 `sig`，这是多年前的测试凭证。**大概率已经失效**，跑起来如果列表为空，看控制台返回码，需要自己去喜马拉雅开放平台申请新的 key。
+**这个接口的凭证在源码里是占位符，原样跑不通** —— `Define.h` 顶部是：
+
+```objc
+#define kXimalayaAppKey     @"YOUR_APP_KEY"
+#define kXimalayaNonce      @"YOUR_NONCE"
+#define kXimalayaTimestamp  @"YOUR_TIMESTAMP"
+#define kXimalayaSig        @"YOUR_SIG"
+```
+
+要让这个接口跑起来，需要自己换：
+
+1. 到 [喜马拉雅开放平台](https://open.ximalaya.com/) 注册开发者、创建应用，拿到 **AppKey** 和 **Secret**
+2. 打开 `BabySong/Define.h`，把上面四个占位符换成自己的值
+3. **`sig` 不是固定字符串**，它是对 `app_key` + `nonce` + `timestamp` + 其他参数用 Secret 计算出来的签名。参数一变签名就变，别处抄来的 sig 一定校验失败，得按官方签名规则自己算
+4. `DisplayViewController.m` 里的 `album_id=14501623` 也要换成你想拉取的专辑 ID
+
+> 为什么留占位符：开放平台的凭证属于开发者个人应用，写死在仓库里既会被别人消耗你的调用配额，也容易因公开泄露被平台限制。换成自己的才能稳定用。
+
+不换凭证也不影响看代码和跑界面 —— 只是那一个专辑列表接口会返回签名错误，其余页面照常。
 
 ## 怎么跑起来
 
@@ -74,7 +99,7 @@ BabySong/
 
 ## 已知限制
 
-- 接口凭证写死在代码里，且是旧 key，**需要自行替换才能拉到数据**。
+- 专辑列表接口的 `app_key` / `sig` 是占位符，需要换成自己的凭证（见上文「数据来源与凭证配置」）。
 - 没有后台播放（未配置 `UIBackgroundModes: audio`），App 切后台音频会停。
 - 没有播放进度条和拖拽，只有播放 / 暂停。
 - `UIAlertView` 是 iOS 9 之前的老控件，现在跑会有一条废弃警告。
